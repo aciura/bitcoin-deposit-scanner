@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "description": "Process transactions and filter them for valid deposits.",
   "main": "index.js",
-  "scripts": {
-    "build": "",
+  "scripts": {    
     "start": "npm run tsc && node dist/index.js",
     "tsc": "tsc",
     "test": "mocha -r ts-node/register src/**/*.spec.ts"

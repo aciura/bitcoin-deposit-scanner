@@ -14,7 +14,7 @@ exports.up = function (db: Knex): Promise<any> {
             table.bigInteger("blocktime").notNullable() //unix timestamp - bigint (8 bytes)  -9223372036854775808 +9223372036854775807
             table.string("txid", 64).notNullable()
             table.integer("vout").notNullable().comment("output vector / output index")
-            //walletconflicts VARCHAR(64) NULL, --not used in sample transactions files
+            table.string("walletconflicts").nullable(), //not used in sample transactions files
             table.bigInteger("time").notNullable(),
             table.bigInteger("timereceived").notNullable()
             table.string("bip125-replaceable", 5).nullable()

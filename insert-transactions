@@ -1,0 +1,4 @@
+#!/bin/sh
+
+node "./dist/src/insertTransactions.js" "$@"
+exit $?
