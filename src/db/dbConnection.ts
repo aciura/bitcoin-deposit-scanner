@@ -2,10 +2,8 @@
 import knex from 'knex';
 import { Config } from 'knex';
 
-export class Connection {
-    public knex(): knex {
-        return knex(exportConfig());
-    }
+export function dbConnection(): knex { 
+    return knex(exportConfig()); 
 }
 
 function exportConfig(): Config {

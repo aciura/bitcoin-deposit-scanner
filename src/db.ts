@@ -1,6 +1,6 @@
 import {IMain, IDatabase} from 'pg-promise';
 import pgPromise from 'pg-promise';
-import { Deposit } from './deposit';
+import { Deposit } from './models/deposit';
 
 const connString = 'postgres://admin:password@localhost:5432/accounts';
 // let connString:string = process.env.DATABASE_URL || '';

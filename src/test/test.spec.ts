@@ -1,15 +1,37 @@
+process.env.NODE_ENV = 'test';
+
 import { expect } from 'chai';
 import 'mocha';
+import { dbConnection } from '../db/dbConnection';
+import { DbService } from '../db/services';
 
-function hello() {
-    return "Hello world!"
-}
+const db = dbConnection();
+const service = new DbService();
 
-describe('Hello function', () => {
+describe('Accounts', () => {
 
-  it('should return hello world', () => {
-    const result = hello();
-    expect(result).to.equal('Hello world!');
-  });
+    beforeEach((done) => {
+        db.migrate.rollback()
+        .then(() => {
+            return db.migrate.latest();
+        }).then(() => {
+            return db.seed.run();
+        }).then(() => { 
+            done(); 
+        })        
+    })
+
+    afterEach((done) => {
+        done();
+    })
+
+    it('there are accounts in db', async () => {
+        let accounts = await service.getAllAccounts();
+        expect(accounts).to.be.not.empty;
+        expect(accounts).to.be.length(7);        
+    });
+
+    
+
 
 });
