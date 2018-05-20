@@ -63,7 +63,7 @@ const testTransactions = [{
     "time": 1524877647575,
     "timereceived": 1524877647575,
     "bip125-replaceable": "no"
-},];
+}];
 
 describe('Transactions', () => {
 
@@ -86,7 +86,7 @@ describe('Transactions', () => {
     })
     
     it('add 2 transactions to db', async () => {
-        const result = await addTransactionsToDb(testTransactions.splice(0, 2));
+        const result = await addTransactionsToDb(testTransactions.slice(0, 2));
         expect(result).to.be.not.null;
         expect(result.success).to.be.eq(2);        
         expect(result.errorCount).to.be.eq(0);
@@ -94,15 +94,14 @@ describe('Transactions', () => {
 
     it('get deposits from db', async () => {
         await addTransactionsToDb(testTransactions);
-        const deposits = await service.getDeposits();
         
+        const deposits = await service.getDeposits();
+        for (let d of deposits) {
+            console.log('Deposit:' + JSON.stringify(d));
+        }
+
         expect(deposits).to.be.not.null;
         expect(deposits.length).to.be.eq(2);
-        
-        for (let d of deposits) {
-            console.log(JSON.stringify(d));
-        }
     })
-
-
+    
 });

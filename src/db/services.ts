@@ -3,6 +3,8 @@ import { dbConnection } from './dbConnection';
 import { Transaction } from '../models/transaction';
 import { Deposit } from '../models/deposit';
 
+const REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION:number = 6; //TODO: Move to a config file
+
 export class DbService {
     private connector: knex;
 
@@ -50,8 +52,7 @@ export class DbService {
             FROM transactions T
                 LEFT OUTER JOIN accounts AS A 
                 ON A.address = T.address
-            WHERE  T.category = 'receive' 
-                AND T.confirmations >= 6
+            WHERE T.confirmations >= ${REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION}
             GROUP BY T.address, A.owner, A.id 
             ORDER BY A.id`);
             
