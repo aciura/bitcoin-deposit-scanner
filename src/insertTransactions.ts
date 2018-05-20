@@ -1,6 +1,4 @@
-import { Deposit } from './models/deposit';
-import { DbService } from './db/services';
-import { convertToTransaction } from './transactionsParser';
+import { addTransactionsToDb } from "./transactionHandler";
 
 console.log(`${(new Date).toLocaleTimeString()}: Starting...`);
 
@@ -10,23 +8,15 @@ process.stdin.setEncoding('utf8');
 const buffer:string[] = [];
 process.stdin.on('data', (data:string) => buffer.push(data));
 
-process.stdin.on('end', async () => {
+process.stdin.on('end', () => {
  
-    let inputJson:string = buffer.join('');
-    let parsedJson:any = JSON.parse(inputJson);
- 
-    const service = new DbService();
-    let success = 0, errorCount = 0;
-    for (let trans of parsedJson.transactions) {
-        // console.log(`${i++}: ${trans.address} ${trans.category} ${trans.amount} CONFIRM:${trans.confirmations}`);        
-        try {
-            await service.insertTransaction(convertToTransaction(trans));
-            success++;                 
-        } catch(err) { 
-            errorCount++;            
-            console.error(`ERROR when saving txid:${trans.txid} vout:${trans.vout}. Error Count: ${errorCount}`, err);             
-        }            
-    }   
-    console.log(`Successfuly inserted ${success} transactions.`); 
-    process.stdin.destroy();
+    const inputJson:string = buffer.join('');
+    const parsedJson:any = JSON.parse(inputJson);
+    
+    addTransactionsToDb(parsedJson.transactions).then(() => {
+        process.exit(0);
+    })
+    .catch(err => {
+        console.error(err);
+    })
 });

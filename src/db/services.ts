@@ -1,5 +1,6 @@
 import * as knex from 'knex';
 import { dbConnection } from './dbConnection';
+import { Transaction } from '../models/transaction';
 
 export class DbService {
     private connector: knex;
@@ -28,12 +29,27 @@ export class DbService {
         }
     }
 
-    insertTransaction(transaction: Transaction) {
+    public insertTransaction(transaction: Transaction) {
         try { 
             return this.Transactions().insert(transaction);
         } catch(err) {
             console.error(err)
         }
+    }
+
+    public getDeposits() {
+        return this.connector.raw(
+        `SELECT 
+            T.address, 
+            A.owner, 
+            A.id, 
+            COUNT(*) as count, 
+            SUM(T.amount) as amount
+        FROM transactions T
+            LEFT OUTER JOIN accounts AS A ON A.address = T.address
+        WHERE  T.category = 'receive' 
+            AND T.confirmations >= 6
+        GROUP BY T.address, A.owner, A.id `);        
     }
     
 }

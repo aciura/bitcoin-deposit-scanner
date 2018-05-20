@@ -1,5 +1,5 @@
 
-interface Transaction {
+export interface Transaction {
 
     involvesWatchonly: boolean;
     /*Obsolete*/ account: string;

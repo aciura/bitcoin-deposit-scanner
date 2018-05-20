@@ -22,7 +22,9 @@ describe('Accounts', () => {
     })
 
     afterEach((done) => {
-        done();
+        db.migrate.rollback().then(() => {
+            done();
+        });        
     })
 
     it('there are accounts in db', async () => {
