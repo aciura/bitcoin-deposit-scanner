@@ -1,6 +1,8 @@
 import { DbService } from "./db/services";
 import { Transaction } from "./models/transaction";
 
+const REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION: number = 6;
+
 //Proper Money Handling (JSON-RPC). See https://en.bitcoin.it/wiki/Proper_Money_Handling_%28JSON-RPC%29 
 function convertFloat2Satoshi(value: number) { 
     return Math.round(1e8 * value);  
@@ -15,16 +17,20 @@ export async function addTransactionsToDb(transactions: any[]) {
     const service = new DbService();
     let success = 0, errorCount = 0;
 
-    for (let trans of transactions) {
-        // console.log(`${i++}: ${trans.address} ${trans.category} ${trans.amount} CONFIRM:${trans.confirmations}`);        
+    const validTransactions = 
+        transactions.map(t => convertToTransaction(t))
+            .filter(t => t.confirmations >= REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION);
+    
+    for (const trans of validTransactions) {        
         try {
-            await service.insertTransaction(convertToTransaction(trans));
-            success++;                 
+                await service.insertTransaction(trans);
+                success++;                              
         } catch(err) { 
             errorCount++;            
-            console.error(`ERROR when saving txid:${trans.txid} vout:${trans.vout}. Error Count: ${errorCount}`, err);             
-        }            
+            console.error(`ERROR when saving txid:${trans.txid} vout:${trans.vout}. Error Count: ${errorCount}`, err);
+        }
     }   
-    console.log(`Successfuly inserted ${success} transactions. Errors: ${errorCount}.`); 
-    return { success: success, errorCount: errorCount };
+    const ignored = transactions.length - success - errorCount;
+    console.log(`Successfuly inserted ${success} transactions out of ${transactions.length}. Errors: ${errorCount}. Ignored: ${ignored}`); 
+    return { success: success, errorCount: errorCount, ignored: ignored, all: transactions.length };
 }

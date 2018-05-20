@@ -1,6 +1,7 @@
 import * as knex from 'knex';
 import { dbConnection } from './dbConnection';
 import { Transaction } from '../models/transaction';
+import { Deposit } from '../models/deposit';
 
 export class DbService {
     private connector: knex;
@@ -37,19 +38,31 @@ export class DbService {
         }
     }
 
-    public getDeposits() {
-        return this.connector.raw(
-        `SELECT 
-            T.address, 
-            A.owner, 
-            A.id, 
-            COUNT(*) as count, 
-            SUM(T.amount) as amount
-        FROM transactions T
-            LEFT OUTER JOIN accounts AS A ON A.address = T.address
-        WHERE  T.category = 'receive' 
-            AND T.confirmations >= 6
-        GROUP BY T.address, A.owner, A.id `);        
+    public async getDeposits(): Promise<Deposit[]> {
+        try { 
+            const result = await this.connector.raw(
+            `SELECT
+                T.address, 
+                A.owner, 
+                A.id, 
+                COUNT(*) as count, 
+                SUM(T.amount) as amount
+            FROM transactions T
+                LEFT OUTER JOIN accounts AS A 
+                ON A.address = T.address
+            WHERE  T.category = 'receive' 
+                AND T.confirmations >= 6
+            GROUP BY T.address, A.owner, A.id 
+            ORDER BY A.id`);
+            
+            if (result.rows) {
+                return result.rows as Deposit[];
+            }            
+
+        } catch (err) {
+            console.error(err);
+        }
+        return [] as Deposit[];
     }
     
 }
