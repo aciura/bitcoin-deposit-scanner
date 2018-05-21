@@ -25,7 +25,8 @@ export async function addTransactionsToDb(transactions: any[]) {
                 success++;                              
         } catch(err) { 
             errorCount++;            
-            console.error(`ERROR when saving txid:${trans.txid} vout:${trans.vout}. Error Count: ${errorCount}`, err);
+            console.error(`ERROR when saving txid:${trans.txid} vout:${trans.vout}. Error Count: ${errorCount}`);
+            //console.error(err);
         }
     }   
     const ignored = transactions.length - success - errorCount;
