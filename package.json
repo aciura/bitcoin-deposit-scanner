@@ -10,7 +10,8 @@
     "start": "node ./dist/src/depositReader.js",    
     "tsc": "tsc",
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
-    "migrate": "knex migrate:latest --env development && knex seed:run --env development"
+    "migrate": "knex migrate:latest --env development && knex seed:run --env development",
+    "all": "npm run migrate && node ./dist/src/insertTransactions <./data/transactions-1.json && node ./dist/src/insertTransactions <./data/transactions-2.json && node ./dist/src/printDeposits "
   },
   "keywords": [
     "bitcoin",

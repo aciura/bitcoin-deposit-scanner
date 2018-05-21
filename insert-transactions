@@ -1,4 +1,4 @@
 #!/bin/sh
-
+# this is only for testing on Windows 
 node "./dist/src/insertTransactions.js" "$@"
 exit $?

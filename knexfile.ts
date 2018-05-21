@@ -3,7 +3,7 @@
 module.exports = {
   test: {
     client: 'pg',
-    connection: 'postgres://admin:password@localhost:5432/accounts',
+    connection: 'postgres://admin:password@postgres:5432/accounts',
     migrations: {
       directory: __dirname + '/src/db/migrations'
     },
@@ -13,7 +13,7 @@ module.exports = {
   },
   development: {
     client: 'pg',
-    connection: 'postgres://admin:password@localhost:5432/accounts',
+    connection: 'postgres://admin:password@postgres:5432/accounts',
     migrations: {
       directory: __dirname + '/src/db/migrations'
     },
