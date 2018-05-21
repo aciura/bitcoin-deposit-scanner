@@ -86,33 +86,38 @@ describe('Transactions', () => {
     })
     
     it('add 2 transactions to db', async () => {
-        const result = await addTransactionsToDb(testTransactions.slice(0, 2));
+        const result = await addTransactionsToDb(clone(testTransactions.slice(0, 2)));
         expect(result).to.be.not.null;
         expect(result.success).to.be.eq(2);        
         expect(result.errorCount).to.be.eq(0);
     });
 
     it('get deposits from db', async () => {
-        await addTransactionsToDb(testTransactions);
+        await addTransactionsToDb(clone(testTransactions));
         
         const deposits = await service.getValidDeposits();
-        for (let d of deposits) {
-            console.log('Deposit:' + JSON.stringify(d));
-        }
+        // for (let d of deposits) {
+        //     console.log('Deposit:' + JSON.stringify(d));
+        // }
 
         expect(deposits).to.be.not.null;
         expect(deposits).to.be.an('Array');
         expect(deposits).lengthOf(2);
-    })
+    });
 
     it('get min/max deposits from db', async () => {
-        await addTransactionsToDb(testTransactions);
+        await addTransactionsToDb(clone(testTransactions));
         
         const minMax = await service.getMinMaxTransaction();
+        console.log('minMax' + JSON.stringify(minMax));
+
         expect(minMax).to.be.not.null;
-        expect(minMax.min).to.eq(0.1);
-        expect(minMax.max).to.eq(7.71);
-    })
+        expect(+minMax.min).to.eq(0.1 * 1e8);
+        expect(+minMax.max).to.eq(7.71 * 1e8);
+    });
     
+   function clone(array: any[]): any[] {
+        return array.map(elem => Object.assign({}, elem));
+   }
     
 });

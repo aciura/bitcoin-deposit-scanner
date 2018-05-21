@@ -7,6 +7,7 @@ import { convertFloat2Satoshi } from "./utils";
 const REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION: number = 6; //TODO: Move to a config file.
 
 function convertToTransaction(jsonObj: any): Transaction {
+    // Note: the same Json object is modified, so it shouldn't be reused 
     jsonObj.amount = convertFloat2Satoshi(jsonObj.amount);
     return jsonObj as Transaction;
 }

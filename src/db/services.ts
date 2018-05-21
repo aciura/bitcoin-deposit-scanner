@@ -12,18 +12,12 @@ export class DbService {
         this.connector = dbConnection();
     }
 
-    private Accounts() {
-        return this.connector.table('accounts');
-    } 
-
-    private Transactions() {
-        return this.connector.table('transactions');
-    }
-
     public async getAllAccounts(): Promise<Account[]> {
         try {
-            const accounts = await this.Accounts().select('*').orderBy('id');
-            //console.log(accounts)
+            const accounts = await this.connector
+                .table('accounts')
+                .select('*').orderBy('id');
+            
             return accounts as Account[];
         }
         catch(err) {
@@ -34,50 +28,40 @@ export class DbService {
 
     public insertTransaction(transaction: Transaction) {
         try { 
-            return this.Transactions().insert(transaction);
+            return this.connector.table('transactions')
+                .insert(transaction);
         } catch(err) {
             console.error('DbService:' + err)
         }
     }
 
     public async getValidDeposits(): Promise<Deposit[]> {
-        try { 
-            const result = await this.connector.raw(
-            `SELECT
-                T.address, 
-                A.owner, 
-                A.id, 
-                COUNT(*) as count, 
-                SUM(T.amount) as amount
-            FROM transactions T
-                LEFT OUTER JOIN accounts AS A 
-                ON A.address = T.address
-            WHERE T.confirmations >= ${REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION}
-            GROUP BY T.address, A.owner, A.id 
-            ORDER BY A.id`);
+        const result = await this.connector.raw(
+        `SELECT
+            T.address, 
+            A.owner, 
+            A.id, 
+            COUNT(*) as count, 
+            SUM(T.amount) as amount
+        FROM transactions T
+            LEFT OUTER JOIN accounts AS A 
+            ON A.address = T.address
+        WHERE T.confirmations >= ${REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION}
+        GROUP BY T.address, A.owner, A.id 
+        ORDER BY A.id`);
             
-            if (result.rows) {
-                return result.rows as Deposit[];
-            }            
-
-        } catch (err) {
-            console.error('DbService:' + err);
+        if (result.rows) {
+            return result.rows as Deposit[];
         }
         return [] as Deposit[];
     }
 
     public async getMinMaxTransaction(): Promise<{min:number,max:number}> {
-        try {
-            const result = await this.connector
-                .select(this.connector.min('amount').as('min'), this.connector.max('amount').as('max'))
-                .from('transactions')
-                .where('confirmations', '>=', REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION)
-                .andWhere('amount', '>', 0);
-            return result;
-            
-        } catch (err) {
-            console.error('DbService:' + err);
-            throw err;
-        }
+        const result = await this.connector.table('transactions')
+        .select(this.connector.raw('MIN(amount) as min, MAX(amount) as max'))
+            .where('confirmations', '>=', REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION)
+            .andWhere('amount', '>', 0);            
+        
+        return result[0];
     }
 }

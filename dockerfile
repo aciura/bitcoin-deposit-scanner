@@ -6,5 +6,6 @@ knex seed:run --env development
 
 ./insert-transactions <data/transactions-1.json
 ./insert-transactions <data/transactions-2.json
+node ./dist/src/printDeposits
 
  

@@ -14,11 +14,11 @@ export class DepositReader {
     public sumUnknownDeposits(deposits: Deposit[]): Deposit {
         let unknownDeposits = deposits.reduce(({sum, count}, deposit) => { 
             if (!deposit.owner) {                 
-                return {sum: sum + (+deposit.amount), count : count + 1};
+                return {sum: sum+(+deposit.amount), count: count + (+deposit.count)};
             }
-            else return {sum: sum, count: count};
+            else return {sum: +sum, count: +count};
         }, {sum:0, count:0});
-        // console.log(`Unknown: count:${unknownDeposits.count} sum:${unknownDeposits.sum}`)
+
         return { id: +Infinity,
             owner: OWNER_UNKNOWN, 
             count: unknownDeposits.count, 
@@ -26,7 +26,7 @@ export class DepositReader {
             address: '' }
     }
 
-    public getMinMaxTransaction(): any {
+    public getMinMaxTransaction(): Promise<{min: number, max: number}> {
         return this.dbService.getMinMaxTransaction();
     }
 }
