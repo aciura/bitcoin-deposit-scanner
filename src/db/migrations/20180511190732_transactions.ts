@@ -6,7 +6,7 @@ exports.up = function (db: Knex): Promise<any> {
             table.boolean("involvesWatchonly").notNullable()    
             table.string("address", 64).notNullable()
             table.string("category", 20).notNullable().comment("send or receive")
-            table.bigInteger("amount").notNullable().comment("amount in satoshis")
+            table.bigInteger("amount").notNullable().comment("amount in satoshis") // max btc in satoshis = 2100000000000000 < 9223372036854775807
             table.string("label").nullable()
             table.integer("confirmations").notNullable()
             table.string("blockhash", 64).notNullable()
@@ -24,7 +24,6 @@ exports.up = function (db: Knex): Promise<any> {
             table.primary(["txid", "vout"]); 
         })
     );
-    
 };
 
 exports.down = function (db: Knex): Promise<any> {

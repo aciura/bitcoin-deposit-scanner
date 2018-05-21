@@ -95,13 +95,14 @@ describe('Transactions', () => {
     it('get deposits from db', async () => {
         await addTransactionsToDb(testTransactions);
         
-        const deposits = await service.getDeposits();
+        const deposits = await service.getValidDeposits();
         for (let d of deposits) {
             console.log('Deposit:' + JSON.stringify(d));
         }
 
         expect(deposits).to.be.not.null;
-        expect(deposits.length).to.be.eq(2);
+        expect(deposits).to.be.an('Array');
+        expect(deposits).lengthOf(2);
     })
     
 });

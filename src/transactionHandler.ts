@@ -19,7 +19,8 @@ export async function addTransactionsToDb(transactions: any[]) {
 
     const validTransactions = 
         transactions.map(t => convertToTransaction(t))
-            .filter(t => t.confirmations >= REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION);
+        // DECISION: I could store just valid transactions but rules said to store all
+        //.filter(t => t.confirmations >= REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION);
 
     for (const trans of validTransactions) {        
         try {

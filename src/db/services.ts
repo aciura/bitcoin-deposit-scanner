@@ -40,7 +40,7 @@ export class DbService {
         }
     }
 
-    public async getDeposits(): Promise<Deposit[]> {
+    public async getValidDeposits(): Promise<Deposit[]> {
         try { 
             const result = await this.connector.raw(
             `SELECT
