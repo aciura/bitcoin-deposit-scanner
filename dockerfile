@@ -1,11 +1,21 @@
+FROM node:8.9.1
 
-// prapare DB
-knex migrate:rollback --env development
-knex migrate:latest --env development
-knex seed:run --env development
+WORKDIR /usr/app
+COPY package*.json .
+RUN npm install --quiet
+RUN npm run tsc
+COPY . .
 
-./insert-transactions <data/transactions-1.json
-./insert-transactions <data/transactions-2.json
-node ./dist/src/printDeposits
+# prapare DB
+RUN knex migrate:rollback --env development
+RUN knex migrate:latest --env development
+RUN knex seed:run --env development
+
+# insert transactions 
+RUN ./insert-transactions <data/transactions-1.json
+RUN ./insert-transactions <data/transactions-2.json
+
+# print deposits
+CMD node ./dist/src/printDeposits
 
  

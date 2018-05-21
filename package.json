@@ -4,9 +4,13 @@
   "description": "Process transactions and filter them for valid deposits.",
   "main": "index.js",
   "scripts": {    
-    "start": "npm run tsc && node dist/index.js",
+    "clean": "rm -rf dist && mkdir dist",
+    "build": "npm run clean && npm run tsc",
+    "prestart": "npm run build && npm run migrate",
+    "start": "node ./dist/src/depositReader.js",    
     "tsc": "tsc",
-    "test": "mocha -r ts-node/register src/**/*.spec.ts"
+    "test": "mocha -r ts-node/register src/**/*.spec.ts",
+    "migrate": "knex migrate:latest --env development && knex seed:run --env development"
   },
   "keywords": [
     "bitcoin",
