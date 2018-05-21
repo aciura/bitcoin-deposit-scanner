@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import 'mocha';
 import { expect } from 'chai';
-import { convertSatToBtc } from '../readDeposits';
+import { convertSatToBtc } from '../utils';
 
 describe('Other/Utils', () => {
     it('convert satoshis to btc', () => {

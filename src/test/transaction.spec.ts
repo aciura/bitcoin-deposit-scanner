@@ -15,7 +15,7 @@ const testTransactions = [{
     "account": "",
     "address": "mmFFG4jqAtw9MoCC88hw5FNfreQWuEHADp", /*'Leonard McCoy'*/
     "category": "receive",
-    "amount": 8,
+    "amount": 0.1,
     "label": "",
     "confirmations": 6,
     "blockhash": "3125fc0ebdcbdae25051f0f5e69ac2969cf910bdf5017349ef55a0ef9d76d591",
@@ -104,5 +104,15 @@ describe('Transactions', () => {
         expect(deposits).to.be.an('Array');
         expect(deposits).lengthOf(2);
     })
+
+    it('get min/max deposits from db', async () => {
+        await addTransactionsToDb(testTransactions);
+        
+        const minMax = await service.getMinMaxTransaction();
+        expect(minMax).to.be.not.null;
+        expect(minMax.min).to.eq(0.1);
+        expect(minMax.max).to.eq(7.71);
+    })
+    
     
 });

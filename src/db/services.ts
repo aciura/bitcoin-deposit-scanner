@@ -36,7 +36,7 @@ export class DbService {
         try { 
             return this.Transactions().insert(transaction);
         } catch(err) {
-            console.error(err)
+            console.error('DbService:' + err)
         }
     }
 
@@ -61,9 +61,23 @@ export class DbService {
             }            
 
         } catch (err) {
-            console.error(err);
+            console.error('DbService:' + err);
         }
         return [] as Deposit[];
     }
-    
+
+    public async getMinMaxTransaction(): Promise<{min:number,max:number}> {
+        try {
+            const result = await this.connector
+                .select(this.connector.min('amount').as('min'), this.connector.max('amount').as('max'))
+                .from('transactions')
+                .where('confirmations', '>=', REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION)
+                .andWhere('amount', '>', 0);
+            return result;
+            
+        } catch (err) {
+            console.error('DbService:' + err);
+            throw err;
+        }
+    }
 }
