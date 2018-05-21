@@ -1,14 +1,12 @@
 import { DbService } from "./db/services";
 import { Transaction } from "./models/transaction";
-import { convertFloat2Satoshi } from "./utils";
-
+import { convertFloatToSatoshi } from "./utils";
 
 
 const REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION: number = 6; //TODO: Move to a config file.
 
 function convertToTransaction(jsonObj: any): Transaction {
-    // Note: the same Json object is modified, so it shouldn't be reused 
-    jsonObj.amount = convertFloat2Satoshi(jsonObj.amount);
+    jsonObj.amount = convertFloatToSatoshi(jsonObj.amount);
     return jsonObj as Transaction;
 }
 
@@ -18,7 +16,7 @@ export async function addTransactionsToDb(transactions: any[]) {
 
     const validTransactions = 
         transactions.map(t => convertToTransaction(t))
-        // DECISION: I could store just valid transactions but rules said to store all
+        // DECISION: I could just store valid transactions but rules said to store all transactions
         //.filter(t => t.confirmations >= REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION);
 
     for (const trans of validTransactions) {        

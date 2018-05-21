@@ -3,6 +3,7 @@ process.env.NODE_ENV = 'test';
 import 'mocha';
 import { expect } from 'chai';
 import { convertSatToBtc } from '../utils';
+import { convertFloatToSatoshi } from '../utils'
 
 describe('Other/Utils', () => {
     it('convert satoshis to btc', () => {
@@ -17,4 +18,10 @@ describe('Other/Utils', () => {
         const maxSatMinusOne = maxSatAmount - 1;
         expect(convertSatToBtc(maxSatMinusOne)).equal('20999999.99999999');
     });
+
+    it('convert float -> satoshi -> float string', () => {
+        const amount = 123.00456789;
+        const result = convertSatToBtc(convertFloatToSatoshi(amount));
+        expect(result).equal(amount.toFixed(8));
+    })
 });
