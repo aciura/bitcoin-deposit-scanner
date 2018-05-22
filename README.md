@@ -53,8 +53,8 @@ The tests in "src/test/transaction.spec.ts" use database migrations to setup dat
 * [typescript](https://www.typescriptlang.org/) - Javascript with types 
 * [Mocha](https://mochajs.org/) - automated test framework, 
 * [chai](http://www.chaijs.com/) - fluent assertion library
-* nodeJs 
-* docker 
+* [nodeJs](https://nodejs.org/en/)  
+* [docker](https://www.docker.com/) 
 
 ## Authors
 
