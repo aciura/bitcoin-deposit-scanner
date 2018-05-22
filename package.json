@@ -2,7 +2,7 @@
   "name": "bitcoin-deposit-scanner",
   "version": "0.0.1",
   "description": "Process transactions and filter them for valid deposits.",
-  "main": "index.js",
+  "main": "dist/src/depositReader.js",
   "scripts": {    
     "clean": "rm -rf dist && mkdir dist",
     "build": "npm run clean && npm run tsc",

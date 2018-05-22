@@ -6,6 +6,4 @@ export function convertFloatToSatoshi(value: number): number {
 
 export function convertSatToBtc(amountInSatoshi: number): string {
     return (+amountInSatoshi/1e8).toFixed(8);
-    // let str = amountInSatoshi.toString().padStart(9, '0');
-    // return str.substr(0, str.length-8) + '.' + str.slice(-8);
 }

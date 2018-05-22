@@ -23,6 +23,6 @@ depositReader.readDepositsFromDb().then((deposits:Deposit[]) => {
     depositReader.getMinMaxTransaction().then(minMaxTransaction => {
         console.log(`Smallest valid deposit: ${minMaxTransaction.min}`);
         console.log(`Largest valid deposit: ${minMaxTransaction.max}`);
-        process.exit(0)
+        // process.exit(0)
     });    
 });

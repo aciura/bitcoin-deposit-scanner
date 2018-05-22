@@ -36,7 +36,7 @@ export class DbService {
             return this.connector.table('transactions')
                 .insert(transaction);
         } catch(err) {
-           // console.error('DbService:' + err)
+           console.error('DbService:' + err)
         }
     }
 
