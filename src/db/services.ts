@@ -8,9 +8,14 @@ const REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION:number = 6; //TODO: Move to a
 export class DbService {
     private connector: knex;
 
+
     constructor() {
         this.connector = dbConnection();
     }
+    
+    private transactionsTable(): knex.QueryBuilder {
+        return this.connector.table('transactions');
+    } 
 
     public async getAllAccounts(): Promise<Account[]> {
         try {
@@ -31,7 +36,7 @@ export class DbService {
             return this.connector.table('transactions')
                 .insert(transaction);
         } catch(err) {
-            console.error('DbService:' + err)
+           // console.error('DbService:' + err)
         }
     }
 
@@ -57,11 +62,16 @@ export class DbService {
     }
 
     public async getMinMaxTransaction(): Promise<{min:number,max:number}> {
-        const result = await this.connector.table('transactions')
-        .select(this.connector.raw('MIN(amount) as min, MAX(amount) as max'))
+        const result = await this.transactionsTable()
+            .select(this.connector.raw('MIN(amount) as min, MAX(amount) as max'))
             .where('confirmations', '>=', REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION)
             .andWhere('amount', '>', 0);            
         
         return result[0];
+    }
+    
+    getTransaction(txid: string, vout: number): any {
+        return this.transactionsTable().where('txid', txid).andWhere('vout', vout)
+            .then(result => result[0]);
     }
 }

@@ -9,7 +9,10 @@ function print(deposits: Deposit[]) {
         console.log(`Deposited for ${d.owner}: count=${d.count} sum=${convertSatToBtc(d.amount)}`));
 }
 
+console.log();
+
 const depositReader = new DepositReader();
+
 depositReader.readDepositsFromDb().then((deposits:Deposit[]) => {
     print(deposits.filter(d => !!d.owner));
     

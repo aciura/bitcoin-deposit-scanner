@@ -1,6 +1,7 @@
 import { DbService } from "./db/services";
 import { Transaction } from "./models/transaction";
 import { convertFloatToSatoshi } from "./utils";
+import { EWOULDBLOCK } from "constants";
 
 
 const REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION: number = 6; //TODO: Move to a config file.
@@ -24,12 +25,13 @@ export async function addTransactionsToDb(transactions: any[]) {
                 await service.insertTransaction(trans);
                 success++;                              
         } catch(err) { 
+            // Exclude duplicated transactions from DB.
+            // There are not many duplications, so we don't need to check
+            // if transaction exists before inserting it (I belive this way is faster).
             errorCount++;            
-            console.error(`ERROR when saving txid:${trans.txid} vout:${trans.vout}. Error Count: ${errorCount}`);
-            //console.error(err);
+            console.error(`Duplicated Transaction txid:${trans.txid} vout:${trans.vout}. Error Count: ${errorCount}`);            
         }
     }   
     const ignored = transactions.length - success - errorCount;
-    console.log(`Successfuly inserted ${success} transactions out of ${transactions.length}. Errors: ${errorCount}. Ignored: ${ignored}`); 
     return { success: success, errorCount: errorCount, ignored: ignored, all: transactions.length };
 }
