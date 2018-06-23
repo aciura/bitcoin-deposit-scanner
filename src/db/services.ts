@@ -4,6 +4,7 @@ import { Transaction } from '../models/transaction';
 import { Deposit } from '../models/deposit';
 
 const REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION:number = 6; //TODO: Move to a config file
+const RECEIVE_CATEGORY:string = 'receive';
 
 export class DbService {
     private connector: knex;
@@ -52,7 +53,7 @@ export class DbService {
             LEFT OUTER JOIN accounts AS A 
             ON A.address = T.address
         WHERE T.confirmations >= ${REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION}
-            AND T.category = "receive"
+            AND T.category = '${RECEIVE_CATEGORY}'
         GROUP BY T.address, A.owner, A.id 
         ORDER BY A.id`);
             
@@ -66,7 +67,8 @@ export class DbService {
         const result = await this.transactionsTable()
             .select(this.connector.raw('MIN(amount) as min, MAX(amount) as max'))
             .where('confirmations', '>=', REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION)
-            .andWhere('amount', '>', 0);            
+            .andWhere('amount', '>', 0)
+            .andWhere('category', '=', RECEIVE_CATEGORY);            
         
         return result[0];
     }

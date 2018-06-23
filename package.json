@@ -3,11 +3,11 @@
   "version": "0.0.1",
   "description": "Process transactions and filter them for valid deposits.",
   "main": "dist/src/depositReader.js",
-  "scripts": {    
+  "scripts": {
     "clean": "rm -rf dist && mkdir dist",
     "build": "npm run clean && npm run tsc",
     "prestart": "npm run build && npm run migrate",
-    "start": "node ./dist/src/depositReader.js",    
+    "start": "node ./dist/src/depositReader.js",
     "tsc": "tsc",
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
     "migrate": "knex migrate:latest --env development && knex seed:run --env development",
