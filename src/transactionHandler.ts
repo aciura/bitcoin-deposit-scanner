@@ -1,8 +1,6 @@
 import { DbService } from "./db/services";
 import { Transaction } from "./models/transaction";
 import { convertFloatToSatoshi } from "./utils";
-import { EWOULDBLOCK } from "constants";
-
 
 const REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION: number = 6; //TODO: Move to a config file.
 
@@ -16,9 +14,8 @@ export async function addTransactionsToDb(transactions: any[]) {
     let success = 0, errorCount = 0;
 
     const validTransactions = 
-        transactions.map(t => convertToTransaction(t))
-        // DECISION: I could just store valid transactions but rules said to store all transactions
-        //.filter(t => t.confirmations >= REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION);
+        transactions.map(t => convertToTransaction(t))        
+        .filter(t => t.confirmations >= REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION);
 
     for (const trans of validTransactions) {        
         try {

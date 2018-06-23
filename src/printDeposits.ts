@@ -21,8 +21,8 @@ depositReader.readDepositsFromDb().then((deposits:Deposit[]) => {
         `Deposited without reference: count=${unknownDeposits.count} sum=${convertSatToBtc(unknownDeposits.amount)}`);
 
     depositReader.getMinMaxTransaction().then(minMaxTransaction => {
-        console.log(`Smallest valid deposit: ${minMaxTransaction.min}`);
-        console.log(`Largest valid deposit: ${minMaxTransaction.max}`);
+        console.log(`Smallest valid deposit: ${convertSatToBtc(minMaxTransaction.min)}`);
+        console.log(`Largest valid deposit: ${convertSatToBtc(minMaxTransaction.max)}`);
         // process.exit(0)
     });    
 });

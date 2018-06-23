@@ -52,6 +52,7 @@ export class DbService {
             LEFT OUTER JOIN accounts AS A 
             ON A.address = T.address
         WHERE T.confirmations >= ${REQUIRED_CONFIRMATIONS_FOR_VALID_TRANSACTION}
+            AND T.category = "receive"
         GROUP BY T.address, A.owner, A.id 
         ORDER BY A.id`);
             
